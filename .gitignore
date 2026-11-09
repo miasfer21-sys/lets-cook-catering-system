@@ -1,0 +1,23 @@
+node_modules/
+.next/
+.env*
+!.env.example
+playwright-report/
+test-results/
+*.log
+*.tsbuildinfo
+
+# Local credentials and database storage/exports
+*.pem
+*.key
+*.p12
+*.pfx
+*.dump
+*.backup
+*.sqlite
+*.sqlite3
+pgdata/
+postgres-data/
+data/
+backups/
+.envrc
