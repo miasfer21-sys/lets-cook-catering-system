@@ -1,0 +1,47 @@
+
+> lets-cook-build-1@1.0.0 test
+> tsx scripts/test-integration.ts
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": PostgreSQL database "lets_cook_test", schema "public" at "localhost:5432"
+
+2 migrations found in prisma/migrations
+
+Applying migration `202611090001_build1`
+Applying migration `202611090002_evidence_hardening`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 202611090001_build1/
+    └─ migration.sql
+  └─ 202611090002_evidence_hardening/
+    └─ migration.sql
+
+All migrations have been successfully applied.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice
+
+ RUN  v3.2.7 /workspace/lets-cook-catering-system
+
+ ✓ tests/workflow.test.ts (13 tests) 2621ms
+
+ Test Files  1 passed (1)
+      Tests  13 passed (13)
+   Start at  17:26:07
+   Duration  2.96s (transform 87ms, setup 0ms, collect 146ms, tests 2.62s, environment 0ms, prepare 55ms)
+
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice

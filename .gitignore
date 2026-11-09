@@ -21,3 +21,6 @@ postgres-data/
 data/
 backups/
 .envrc
+
+# TD11 local scratch and dependency cache
+work/

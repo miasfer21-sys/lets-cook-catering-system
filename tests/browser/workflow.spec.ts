@@ -22,3 +22,13 @@ test('unauthenticated and cross-origin mutation denied',async({request})=>{
  const r=await request.get('/api/workflow');expect(r.status()).toBe(401);
  const p=await request.post('/api/workflow',{headers:{Origin:'https://untrusted.example'},data:{}});expect(p.status()).toBe(403);
 });
+
+test('TD11-09 outage identifies saved AI proposals as historical evidence',async({page})=>{
+ await login(page,'coordinator@demo.local');await page.getByRole('button',{name:/Willow Arts Workshop/}).click();
+ await page.getByRole('button',{name:'Generate simulated suggestion',exact:true}).click();await expect(page.getByRole('status')).toContainText('proposal saved');
+ await page.getByRole('button',{name:'Simulate AI failure',exact:true}).click();await expect(page.getByRole('status')).toContainText('Manual review');
+ await expect(page.locator('.proposal')).toHaveCount(1);
+ await expect(page.locator('.proposal')).toContainText('Historical advisory proposal');
+ await expect(page.locator('.proposal time')).toHaveAttribute('datetime',/.+/);
+ await page.screenshot({path:'test-results/td11-ai-outage.png',fullPage:true});
+});

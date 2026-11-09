@@ -79,37 +79,21 @@ See FILES.md for the complete source inventory, DECISIONS.md for design refineme
 
 ## GitHub and the exact baseline
 
-No GitHub repository or commit is created by this delivery. After extracting the source archive into a new directory:
+Repository: `miasfer21-sys/lets-cook-catering-system`. The annotated tag
+`build-1-baseline` resolves to commit `1627ccb8dd72b83489ce2d64fc7de989e3cb7784`.
+Preserve this tag and commit. TD11 work is local on `td11-testing-refinement`,
+created from that baseline; no push or merge is authorized.
+
+See TD11-TESTING.md for fresh executed tests and evidence and TD11-REFINEMENTS.md
+for investigated discrepancies, refinements, retests and outstanding policy questions.
+
+To verify the baseline without changing it:
 
 ```sh
-git init -b main
-git status --short --untracked-files=all
-git check-ignore .env node_modules .next
-```
-
-Review files before staging; exclude secrets, database dumps, customer data and local output. The supplied archive contains no `.env`, dependencies, database volume, or browser storage. `.env.example` contains placeholders only.
-
-```sh
-git add .
-git diff --cached --name-only
-git diff --cached
-```
-
-Inspect the staged diff for credentials. Then:
-
-```sh
-git commit -m "Build 1: authorized catering booking vertical slice"
-git tag -a build-1-baseline -m "Reviewed Build 1 baseline"
-git rev-parse HEAD
 git rev-parse 'build-1-baseline^{commit}'
+git status --short --branch
 ```
 
-Record the full 40-character commit SHA emitted by both commands. That SHA identifies the exact baseline; the annotated tag is a readable label. Create an empty GitHub repository through GitHub, replace OWNER and REPOSITORY below, then push using your own configured Git credentials:
-
-```sh
-git remote add origin https://github.com/OWNER/REPOSITORY.git
-git push -u origin main
-git push origin build-1-baseline
-```
-
-The immutable review link is `https://github.com/OWNER/REPOSITORY/tree/FULL_COMMIT_SHA`. Do not paste access tokens into commands or repository files. If a secret is ever committed, revoke it and remove it from history before sharing.
+Review changes and exclude `.env`, dependencies, database storage and browser
+session data before committing. Push or merge only after the repository owner's
+approval. No production credentials or customer records are used in TD11.

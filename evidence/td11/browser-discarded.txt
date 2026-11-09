@@ -1,0 +1,95 @@
+
+> lets-cook-build-1@1.0.0 test:e2e
+> tsx scripts/test-integration.ts --browser
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": PostgreSQL database "lets_cook_test", schema "public" at "localhost:5432"
+
+2 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice
+Fictional demo data reset and seeded.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice
+[WebServer] (node:2696) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:2709) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:2723) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:2888) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]  ⨯ [Error: ENOENT: no such file or directory, open '/workspace/lets-cook-catering-system/.next/routes-manifest.json'] {
+[WebServer]   errno: -2,
+[WebServer]   code: 'ENOENT',
+[WebServer]   syscall: 'open',
+[WebServer]   path: '/workspace/lets-cook-catering-system/.next/routes-manifest.json',
+[WebServer]   page: '/api/workflow'
+[WebServer] }
+[WebServer]  ⨯ [Error: ENOENT: no such file or directory, open '/workspace/lets-cook-catering-system/.next/routes-manifest.json'] {
+[WebServer]   errno: -2,
+[WebServer]   code: 'ENOENT',
+[WebServer]   syscall: 'open',
+[WebServer]   path: '/workspace/lets-cook-catering-system/.next/routes-manifest.json',
+[WebServer]   page: '/'
+[WebServer] }
+[WebServer]  ⨯ Error: Cannot find module './611.js'
+[WebServer] Require stack:
+[WebServer] - /workspace/lets-cook-catering-system/.next/server/webpack-runtime.js
+[WebServer] - /workspace/lets-cook-catering-system/.next/server/pages/_document.js
+[WebServer] - /workspace/lets-cook-catering-system/node_modules/next/dist/server/require.js
+[WebServer] - /workspace/lets-cook-catering-system/node_modules/next/dist/server/load-components.js
+[WebServer] - /workspace/lets-cook-catering-system/node_modules/next/dist/build/utils.js
+[WebServer] - /workspace/lets-cook-catering-system/node_modules/next/dist/build/swc/options.js
+[WebServer] - /workspace/lets-cook-catering-system/node_modules/next/dist/build/swc/index.js
+[WebServer] - /workspace/lets-cook-catering-system/node_modules/next/dist/build/next-config-ts/transpile-config.js
+[WebServer] - /workspace/lets-cook-catering-system/node_modules/next/dist/server/config.js
+[WebServer] - /workspace/lets-cook-catering-system/node_modules/next/dist/server/next.js
+[WebServer] - /workspace/lets-cook-catering-system/node_modules/next/dist/server/lib/start-server.js
+[WebServer]     at <unknown> (.next/server/pages/_error.js:19:16151)
+[WebServer]     at Object.<anonymous> (.next/server/pages/_error.js:19:16197) {
+[WebServer]   code: 'MODULE_NOT_FOUND',
+[WebServer]   requireStack: [Array]
+[WebServer] }
+[WebServer]  ⨯ Error: Cannot find module './611.js'
+[WebServer] Require stack:
+[WebServer] - /workspace/lets-cook-catering-system/.next/server/webpack-runtime.js
+[WebServer] - /workspace/lets-cook-catering-system/.next/server/pages/_document.js
+[WebServer] - /workspace/lets-cook-catering-system/node_modules/next/dist/server/require.js
+[WebServer] - /workspace/lets-cook-catering-system/node_modules/next/dist/server/load-components.js
+[WebServer] - /workspace/lets-cook-catering-system/node_modules/next/dist/build/utils.js
+[WebServer] - /workspace/lets-cook-catering-system/node_modules/next/dist/build/swc/options.js
+[WebServer] - /workspace/lets-cook-catering-system/node_modules/next/dist/build/swc/index.js
+[WebServer] - /workspace/lets-cook-catering-system/node_modules/next/dist/build/next-config-ts/transpile-config.js
+[WebServer] - /workspace/lets-cook-catering-system/node_modules/next/dist/server/config.js
+[WebServer] - /workspace/lets-cook-catering-system/node_modules/next/dist/server/next.js
+[WebServer] - /workspace/lets-cook-catering-system/node_modules/next/dist/server/lib/start-server.js
+[WebServer]     at <unknown> (.next/server/pages/_error.js:19:16151)
+[WebServer]     at Object.<anonymous> (.next/server/pages/_error.js:19:16197) {
+[WebServer]   code: 'MODULE_NOT_FOUND',
+[WebServer]   requireStack: [Array]
+[WebServer] }
+Terminated
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice
