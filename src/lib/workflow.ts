@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { db, DB, rows } from './db';
 export class WorkflowError extends Error { constructor(message:string,public status=409){super(message);} }
 const id=z.string().uuid();
-const commandSchema=z.object({bookingId:id,version:z.number().int().nonnegative(),action:z.enum(['feasibility','decision','confirm','clarify','resolve','resume','ai','aiReview']),reason:z.string().trim().max(4000).optional(),outcome:z.enum(['Approved','Rejected','Escalated']).optional(),recordId:id.optional(),review:z.enum(['Accepted','Modified','Rejected']).optional(),simulateFailure:z.boolean().optional()});
+const commandSchema=z.object({bookingId:id,version:z.number().int().nonnegative(),action:z.enum(['feasibility','decision','confirm','clarify','resolve','disposition','resume','ai','aiReview']),reason:z.string().trim().max(4000).optional(),outcome:z.enum(['Approved','Rejected','Escalated']).optional(),recordId:id.optional(),review:z.enum(['Accepted','Modified','Rejected']).optional(),source:z.string().trim().min(1).max(4000).optional(),disposition:z.enum(['ApprovedInstruction','Rejected','Escalated']).optional(),instruction:z.enum(['Use the north entrance.','Use the south entrance.','Call the venue contact on arrival.']).optional(),materialChange:z.boolean().optional(),simulateFailure:z.boolean().optional()});
 export type Command=z.infer<typeof commandSchema>;
 export async function staffContext(tx:DB, staffId:string) {
  const [s]=await rows(tx,'SELECT id,name,email,role,active FROM staff_member WHERE id=$1::uuid',id.parse(staffId));
@@ -22,12 +22,13 @@ export async function reviewData(staffId:string){
   b.feasibility=await rows(db,'SELECT f.*,s.name AS reviewer_name FROM feasibility_review f LEFT JOIN staff_member s ON s.id=f.reviewed_by WHERE booking_id=$1::uuid',b.id);
   b.feasibilityHistory=await rows(db,'SELECT f.*,s.name AS staff_name FROM feasibility_acknowledgement f JOIN staff_member s ON s.id=f.staff_id WHERE booking_id=$1::uuid ORDER BY created_at',b.id);
   b.clarifications=await rows(db,'SELECT * FROM clarification_request WHERE booking_id=$1::uuid ORDER BY created_at',b.id);
+  b.dispositions=await rows(db,'SELECT d.*,s.name AS staff_name FROM clarification_disposition d JOIN clarification_request c ON c.id=d.clarification_id JOIN staff_member s ON s.id=d.staff_id WHERE c.booking_id=$1::uuid ORDER BY d.revision',b.id);
   b.analyses=await rows(db,'SELECT * FROM ai_analysis WHERE inquiry_id=$1::uuid ORDER BY created_at',b.inquiry_id);
   b.quoteHistory=await rows(db,'SELECT id,version_number,terms,total,created_at FROM quote_version WHERE inquiry_id=$1::uuid ORDER BY version_number',b.inquiry_id);
  }
  return {staff:s,bookings,orders:await handoffs()};
 }
-async function handoffs(){return rows(db,`SELECT o.id,o.booking_id,o.status,b.accepted_quote_version_id,i.event_date,i.event_location,i.guest_count,i.service_type,i.dietary_restrictions,i.special_requests FROM catering_order o JOIN booking b ON b.id=o.booking_id JOIN inquiry i ON i.id=b.inquiry_id WHERE b.status='Confirmed' ORDER BY o.created_at DESC`).then(async orders=>{for(const o of orders)o.lines=await rows(db,'SELECT description,quantity FROM order_line WHERE order_id=$1::uuid',o.id);return orders;});}
+async function handoffs(){return rows(db,`SELECT o.id,o.booking_id,o.status,b.accepted_quote_version_id,i.event_date,i.event_location,i.guest_count,i.service_type,i.dietary_restrictions,i.special_requests FROM catering_order o JOIN booking b ON b.id=o.booking_id JOIN inquiry i ON i.id=b.inquiry_id WHERE b.status='Confirmed' ORDER BY o.created_at DESC`).then(async orders=>{for(const o of orders){o.lines=await rows(db,'SELECT description,quantity FROM order_line WHERE order_id=$1::uuid',o.id);o.instructions=await rows(db,'SELECT instruction FROM order_instruction WHERE order_id=$1::uuid ORDER BY created_at,id',o.id);}return orders;});}
 async function prerequisites(tx:DB,b:any,approved=false){
  const [i]=await rows(tx,'SELECT * FROM inquiry WHERE id=$1::uuid',b.inquiry_id);
  const [q]=await rows(tx,`SELECT q.*,a.accepted_at FROM quote_version q JOIN quote_acceptance a ON a.quote_version_id=q.id WHERE a.id=$1::uuid AND q.id=$2::uuid AND q.inquiry_id=$3::uuid`,b.acceptance_id,b.accepted_quote_version_id,b.inquiry_id);
@@ -37,7 +38,7 @@ async function prerequisites(tx:DB,b:any,approved=false){
  const [f]=await rows(tx,'SELECT * FROM feasibility_review WHERE booking_id=$1::uuid',b.id);
  const evidenceVersion=approved?b.version-1:b.version;
  if(!f?.reviewed_by || f.booking_version!==evidenceVersion || f.scheduling!=='Clear'||f.capacity!=='Clear'||f.missing_information.length)throw new WorkflowError('Staff-reviewed demonstration feasibility evidence must be current, complete, and clear.');
- const open=await rows(tx,'SELECT id FROM clarification_request WHERE booking_id=$1::uuid AND resolved_at IS NULL',b.id);
+ const open=await rows(tx,`SELECT c.id FROM clarification_request c LEFT JOIN LATERAL (SELECT outcome FROM clarification_disposition WHERE clarification_id=c.id ORDER BY revision DESC LIMIT 1) d ON true WHERE c.booking_id=$1::uuid AND (c.resolved_at IS NULL OR c.response_source IS NULL OR c.material_change OR d.outcome IS NULL OR d.outcome='Escalated')`,b.id);
  if(open.length)throw new WorkflowError('Resolve outstanding clarification before approval or confirmation.');
  const lines=z.array(z.object({description:z.string().trim().min(1),quantity:z.number().int().positive(),unitPriceCents:z.number().int().nonnegative().max(1000000000)})).min(1).parse(q.pricing_details);
  const cents=lines.reduce((sum,l)=>sum+l.quantity*l.unitPriceCents,0);
@@ -69,6 +70,7 @@ export async function execute(staffId:string,input:unknown){
   }
   if(cmd.action==='resume'){
    if(s.role!=='Manager'||b.status!=='Escalated')throw new WorkflowError('Only a manager can return an escalated booking to review.',403);
+   if((await rows(tx,'SELECT id FROM clarification_request WHERE booking_id=$1::uuid AND material_change',b.id)).length)throw new WorkflowError('Material change requires a future formal amendment process.');
    await event(tx,b,s.id,'PendingReview',reason());
    await tx.$executeRawUnsafe("UPDATE booking SET status='PendingReview',version=version+1 WHERE id=$1::uuid",b.id);
    return {message:'Escalation resolution recorded. Renew feasibility review before deciding.'};
@@ -81,9 +83,16 @@ export async function execute(staffId:string,input:unknown){
    const orderId=randomUUID();
    await tx.$executeRawUnsafe("INSERT INTO catering_order(id,booking_id,status) VALUES($1::uuid,$2::uuid,'Created')",orderId,b.id);
    for(const l of lines)await tx.$executeRawUnsafe('INSERT INTO order_line(id,order_id,description,quantity,unit_price,line_total) VALUES($1::uuid,$2::uuid,$3,$4,$5::numeric,$6::numeric)',randomUUID(),orderId,l.description,l.quantity,(l.unitPriceCents/100).toFixed(2),(l.quantity*l.unitPriceCents/100).toFixed(2));
+   const instructions=await rows(tx,`SELECT d.id,d.instruction FROM clarification_request c JOIN LATERAL (SELECT * FROM clarification_disposition WHERE clarification_id=c.id ORDER BY revision DESC LIMIT 1) d ON true WHERE c.booking_id=$1::uuid AND d.outcome='ApprovedInstruction' ORDER BY c.created_at,c.id`,b.id);
+   for(const d of instructions)await tx.$executeRawUnsafe('INSERT INTO order_instruction(id,order_id,disposition_id,instruction) VALUES($1::uuid,$2::uuid,$3::uuid,$4)',randomUUID(),orderId,d.id,d.instruction);
    await event(tx,b,s.id,'Confirmed','Separate staff confirmation of recorded approval',d.id);
    await tx.$executeRawUnsafe("UPDATE booking SET status='Confirmed',version=version+1,confirmed_at=now() WHERE id=$1::uuid",b.id);
    return {message:'Booking confirmed. One operational order created.',orderId};
+  }
+  if(b.status==='Approved' && ['clarify','resolve','disposition'].includes(cmd.action)){
+   await event(tx,b,s.id,'PendingReview','Clarification activity invalidated prior approval; renewed review required');
+   await tx.$executeRawUnsafe("UPDATE booking SET status='PendingReview' WHERE id=$1::uuid",b.id);
+   b.status='PendingReview';
   }
   if(b.status!=='PendingReview')throw new WorkflowError('This action requires PendingReview.');
   if(cmd.action==='feasibility'){
@@ -94,8 +103,28 @@ export async function execute(staffId:string,input:unknown){
    await tx.$executeRawUnsafe('INSERT INTO clarification_request(id,booking_id,question,staff_id) VALUES($1::uuid,$2::uuid,$3,$4::uuid)',randomUUID(),b.id,reason(),s.id);
   }else if(cmd.action==='resolve'){
    if(!cmd.recordId)throw new WorkflowError('Clarification reference required.',400);
-   const n=await tx.$executeRawUnsafe('UPDATE clarification_request SET response=$1,resolved_by=$2::uuid,resolved_at=now() WHERE id=$3::uuid AND booking_id=$4::uuid AND resolved_at IS NULL',reason(),s.id,cmd.recordId,b.id);
+   if(!cmd.source)throw new WorkflowError('Separate response evidence source required.',400);
+   const n=await tx.$executeRawUnsafe('UPDATE clarification_request SET response=$1,resolved_by=$2::uuid,resolved_at=now(),response_source=$5,material_change=$6 WHERE id=$3::uuid AND booking_id=$4::uuid AND resolved_at IS NULL',reason(),s.id,cmd.recordId,b.id,cmd.source,cmd.materialChange===true);
    if(n!==1)throw new WorkflowError('Open clarification not found.');
+  }else if(cmd.action==='disposition'){
+   if(!cmd.recordId||!cmd.disposition||cmd.materialChange===undefined)throw new WorkflowError('Clarification, disposition and explicit material-change assessment required.',400);
+   const [c]=await rows(tx,'SELECT * FROM clarification_request WHERE id=$1::uuid AND booking_id=$2::uuid',cmd.recordId,b.id);
+   if(!c?.resolved_at)throw new WorkflowError('Record the customer response before disposition.');
+   // Human assessment is mandatory. This conservative guard catches obvious material
+   // content; it is not natural-language interpretation or allergy clearance.
+   const flagged=c.material_change||cmd.materialChange||/\b(guests?|menu|price|pricing|allerg\w*|dietary|date|requirements?|terms)\b|\$|\b\d{4}-\d{2}-\d{2}\b/i.test(c.response);
+   if(flagged&&cmd.disposition!=='Escalated')throw new WorkflowError('Material change must be escalated for a future formal amendment process.');
+   if(cmd.disposition==='ApprovedInstruction'&&!cmd.instruction)throw new WorkflowError('Choose an approved noncommercial instruction.',400);
+   if(cmd.disposition!=='ApprovedInstruction'&&cmd.instruction)throw new WorkflowError('Only an approved disposition may contain an instruction.',400);
+   if(!c.response_source){if(!cmd.source)throw new WorkflowError('Separate response evidence source required for legacy response.',400);await tx.$executeRawUnsafe('UPDATE clarification_request SET response_source=$1 WHERE id=$2::uuid',cmd.source,c.id);}
+   const [v]=await rows(tx,'SELECT COALESCE(MAX(revision),0)+1 AS revision FROM clarification_disposition WHERE clarification_id=$1::uuid',c.id);
+   await tx.$executeRawUnsafe('INSERT INTO clarification_disposition(id,clarification_id,revision,outcome,instruction,staff_id,reason) VALUES($1::uuid,$2::uuid,$3,$4,$5,$6::uuid,$7)',randomUUID(),c.id,v.revision,cmd.disposition,cmd.instruction||null,s.id,reason());
+   if(cmd.disposition==='Escalated'){
+    await tx.$executeRawUnsafe('UPDATE clarification_request SET material_change=true WHERE id=$1::uuid',c.id);
+    await event(tx,b,s.id,'Escalated','Clarification disposition: '+cmd.reason);
+    await tx.$executeRawUnsafe("UPDATE booking SET status='Escalated',version=version+1 WHERE id=$1::uuid",b.id);
+    return {message:'Material or unresolved requirement escalated. Formal amendment process required; no confirmation permitted.'};
+   }
   }else if(cmd.action==='decision'){
    if(!cmd.outcome)throw new WorkflowError('Decision outcome required.',400);
    const explanation=reason();

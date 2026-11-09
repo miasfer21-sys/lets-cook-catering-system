@@ -46,3 +46,66 @@ Additional schema scope: Inquiry and Quote lifecycle-status editing and unused b
 ## Known limitations
 
 No production authorization policy thresholds, automatic severe-allergy clearance, quote renewal, approved-booking recovery, cancellation, or operational closure. No live scheduling integration. Authentication has no rate limiter or SSO. There is no service-wide immutable audit sink or backup/restore exercise. The UI loads all demo bookings without pagination. Full screen-reader, print-printer, load, and penetration testing have not been performed. Browser tests cover selected roles and workflows, not exhaustive accessibility compliance. No claim of production readiness.
+
+## Final approved refinement — clarification disposition to Kitchen snapshot
+
+The owner approved only clarification disposition/handoff, documentation
+reconciliation and final reproducibility/regression work, starting from TD11
+`2ceb3553cef4141a972814ace8a351a852e0687c`. This section supersedes the narrower
+clarification behavior described in §6 and the limited Approved→review restriction
+in §7 above; other deferred scope remains.
+
+- **Material advancement:** Build 1/TD11 only retained response text internally.
+  Final adds separate response evidence, explicit human disposition history and
+  immutable confirmed-order instruction snapshots. It does not implement quote
+  creation, feasibility clearance or generalized accepted-requirement editing.
+- **Design basis:** TD7b reviewFeasibility, recordDecision and confirmBooking;
+  TD8 preserved original/accepted records and historical transitions; TD9's
+  applicable-instructions Kitchen output and separate decision/confirmation;
+  TD10 authority, transactional persistence and advisory-AI boundary. Original
+  design quotes remain in evidence/td11/design-rules.md. The disposition structure
+  is a final construction refinement filling the TD11 D3 handoff gap, not a claim
+  that the earlier artifacts specified this exact schema/UI.
+- **Response/source:** New responses require distinct nonblank response and source
+  fields. Once recorded, response, source and actor/time are immutable. Migration
+  retains legacy combined text unchanged; unconfirmed legacy responses need
+  separate source capture before disposition. No parsing invents legacy sources.
+- **Authority/provenance:** Active Coordinator/Manager use signed-session identity.
+  Each disposition appends a revision with actor, server timestamp, reason, outcome
+  and (only for ApprovedInstruction) one controlled instruction. Kitchen cannot
+  read or mutate clarification/disposition records. Rejected means no instruction;
+  Escalated/material requires a future amendment process.
+- **Bounded instructions:** The approved list is north entrance, south entrance or
+  call venue contact on arrival. No free-text response or review note is promoted
+  into authoritative instructions. Human staff explicitly assess accepted terms
+  as unchanged or material/uncertain; obvious material keywords are conservatively
+  blocked too. Keyword checks do not establish semantic completeness or safety.
+  Staff must escalate uncertainty; this is not an allergy or availability check.
+- **Invalidation:** Clarification request, response and disposition actions advance
+  booking version. Activity while Approved records Approved→PendingReview, preserving
+  the old decision and invalidating its eligibility. Feasibility and approval must
+  be repeated. Confirmation reloads state/version and prerequisites under a booking
+  lock. No post-confirmation changes are exposed.
+- **Material boundary:** Date/count/menu/price/allergy/accepted-requirement changes
+  are not applied. Escalated dispositions mark a lasting amendment blocker and
+  record an Escalated status event. Manager resume cannot clear that blocker. This
+  deliberately does not implement the separately deferred feasibility-resolution
+  feature. Existing Harbor/Maple findings still block approval.
+- **Confirmation:** In the same transaction as order/lines/history/status, snapshot
+  the latest approved disposition for each clarification into order_instruction.
+  Snapshot rows reference internal provenance but Kitchen projection returns only
+  instruction text. Both snapshot and disposition histories are append-only.
+  Database insertion guard requires current approved provenance during confirmation.
+  Unique booking/order relationship and booking lock preserve retry/concurrency
+  behavior. The print view renders the same stored snapshot as the screen.
+- **Upgrade:** New migration only adds structures/guards. Existing accepted sources,
+  decisions, history and confirmed orders remain unchanged; no retroactive
+  instruction is invented. Seeding additionally resets new tables only in the
+  documented disposable demo/test databases.
+- **Runtime reconciliation:** Dev/start bind 127.0.0.1, matching the local-demo scope.
+  No dependency changes, external AI, production credentials or hosted deployment.
+
+Final verification and limitations are in FINAL-VALIDATION.md. Historical TD11
+results/documents were preserved; two existing clarification test inputs were
+adapted to the new explicit source/disposition contract while retaining their
+original stale-feasibility assertions. No old results were rewritten.

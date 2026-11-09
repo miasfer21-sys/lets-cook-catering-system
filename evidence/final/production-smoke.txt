@@ -1,0 +1,40 @@
+
+> lets-cook-build-1@1.0.0 test:production
+> tsx scripts/test-integration.ts --production
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": PostgreSQL database "lets_cook_test", schema "public" at "localhost:5432"
+
+3 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice
+Fictional demo data reset and seeded.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice
+   ▲ Next.js 15.5.29
+   - Local:        http://127.0.0.1:3000
+   - Network:      http://127.0.0.1:3000
+
+ ✓ Starting...
+ ✓ Ready in 558ms
+FINAL-PRODUCTION {"result":"PASS","startup":"HTTP 200","staffLogin":true,"confirmedOrder":"f02200a2-93c7-4367-bdfb-14fe64a961cc","retrySameOrder":true,"kitchenInstructions":[{"instruction":"Use the north entrance."}],"confidentiality":true}
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice

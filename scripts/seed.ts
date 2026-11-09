@@ -8,7 +8,7 @@ export async function seed(){
  if(!/lets_cook(?:_test)?(?:\?|$)/.test(process.env.DATABASE_URL||''))throw new Error('Seed is restricted to lets_cook or lets_cook_test databases.');
  await db.$transaction(async tx=>{
   // Explicit reset of fictional demo records; TRUNCATE does not invoke immutable-row triggers.
-  await tx.$executeRawUnsafe('TRUNCATE feasibility_acknowledgement,ai_analysis,status_event,order_line,catering_order,approval_decision,clarification_request,feasibility_review,booking,quote_acceptance,quote_version,quote,inquiry,customer,staff_member CASCADE');
+  await tx.$executeRawUnsafe('TRUNCATE order_instruction,clarification_disposition,feasibility_acknowledgement,ai_analysis,status_event,order_line,catering_order,approval_decision,clarification_request,feasibility_review,booking,quote_acceptance,quote_version,quote,inquiry,customer,staff_member CASCADE');
   for(const [key,role,name] of [['coordinator','Coordinator','Alex Rivera'],['manager','Manager','Morgan Lee'],['kitchen','Kitchen','Jamie Chen']])await tx.$executeRawUnsafe('INSERT INTO staff_member(id,email,name,role,password_hash) VALUES($1::uuid,$2,$3,$4,$5)',ids[key as keyof typeof ids],`${key}@demo.local`,name,role,hashPassword(process.env.DEMO_PASSWORD!));
   let n=0;
   for(const bid of [ids.ready,ids.conflict,ids.missing]){

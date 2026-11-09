@@ -1,0 +1,1 @@
+FINAL-PRINT PASS: pdftotext extracted the north-entrance instruction; no PRIVATE- markers or USD pricing; exactly one selected Kitchen handoff. Screenshot visually inspected.

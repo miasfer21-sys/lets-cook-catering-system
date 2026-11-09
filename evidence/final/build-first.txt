@@ -1,0 +1,26 @@
+
+> lets-cook-build-1@1.0.0 build
+> next build
+
+   ▲ Next.js 15.5.29
+   - Environments: .env
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 2.6s
+   Linting and checking validity of types ...
+Failed to compile.
+
+./work/inspect-labels.ts:2:612
+Type error: Property 'labels' does not exist on type 'SVGElement | HTMLElement'.
+  Property 'labels' does not exist on type 'SVGElement'.
+
+  1 | import 'dotenv/config';import {chromium} from '@playwright/test';
+> 2 | async function main(){const b=await chromium.launch({executablePath:'/usr/bin/chromium'});const p=await b.newPage();await p.goto('http://localhost:3000');await p.getByLabel('Email',{exact:true}).fill('coordinator@demo.local');await p.getByLabel('Password',{exact:true}).fill(process.env.DEMO_PASSWORD!);await p.getByRole('button',{name:'Sign in',exact:true}).click();await p.getByRole('heading',{name:'Original customer source'}).waitFor();await p.getByRole('button',{name:/Harbor Community Lunch/}).click();console.log(await p.locator('select').evaluateAll(es=>es.map(e=>({html:e.outerHTML,labels:Array.from(e.labels||[]).map(l=>l.textContent)}))));console.log('exact matches',await p.getByLabel('Requirement assessment',{exact:true}).count());console.log('partial matches',await p.getByLabel('Requirement assessment').count());await b.close();}main();
+    |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ^
+  3 |
+Next.js build worker exited with code: 1 and signal: null
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice

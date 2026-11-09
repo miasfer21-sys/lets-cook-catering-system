@@ -55,8 +55,9 @@ it('TD11-07 exact accepted v2 survives later unaccepted v3; mismatched acceptanc
 });
 it('TD11-08 changed clarification response invalidates previous feasibility acknowledgement',async()=>{
  await act('clarify',{reason:'TD11 confirm service instructions'});const [c]=await rows(db,'SELECT * FROM clarification_request');await review();const previous=await state();
- await act('resolve',{recordId:c.id,reason:'TD11 customer: use north entrance; fictional email TD11-REPLY-8'});
+ await act('resolve',{recordId:c.id,reason:'TD11 customer: use north entrance',source:'fictional email TD11-REPLY-8'});
  await expect(act('decision',{outcome:'Approved',reason:'Attempt stale review'})).rejects.toThrow('feasibility');
  const [f]=await rows(db,'SELECT * FROM feasibility_review WHERE booking_id=$1::uuid',bid);expect(f.booking_version).toBe(previous.version);expect((await state()).version).toBe(previous.version+1);
+ await act('disposition',{recordId:c.id,disposition:'ApprovedInstruction',instruction:'Use the north entrance.',materialChange:false,reason:'Arrival instruction only; accepted terms unchanged'});
  await approve();await act('confirm');evidence('TD11-08',{priorReviewVersion:f.booking_version,after:await snapshot(),clarification:await rows(db,'SELECT * FROM clarification_request')});
 });

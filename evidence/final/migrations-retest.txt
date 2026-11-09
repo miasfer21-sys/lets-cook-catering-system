@@ -1,0 +1,56 @@
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": PostgreSQL database "lets_cook_final_fresh_1794247876368", schema "public" at "localhost:5432"
+
+3 migrations found in prisma/migrations
+
+Applying migration `202611090001_build1`
+Applying migration `202611090002_evidence_hardening`
+Applying migration `202611090003_clarification_disposition`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 202611090001_build1/
+    └─ migration.sql
+  └─ 202611090002_evidence_hardening/
+    └─ migration.sql
+  └─ 202611090003_clarification_disposition/
+    └─ migration.sql
+
+All migrations have been successfully applied.
+
+FINAL-MIGRATION {"mode":"fresh","database":"lets_cook_final_fresh_1794247876368","result":"PASS","migrations":[{"migration_name":"202611090001_build1"},{"migration_name":"202611090002_evidence_hardening"},{"migration_name":"202611090003_clarification_disposition"}],"preserved":"empty schema created","instructionRows":[{"count":0}]}
+Prisma schema loaded from work/final-prior-schema/schema.prisma
+Datasource "db": PostgreSQL database "lets_cook_final_upgrade_1794247878118", schema "public" at "localhost:5432"
+
+2 migrations found in prisma/migrations
+
+Applying migration `202611090001_build1`
+Applying migration `202611090002_evidence_hardening`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 202611090001_build1/
+    └─ migration.sql
+  └─ 202611090002_evidence_hardening/
+    └─ migration.sql
+
+All migrations have been successfully applied.
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": PostgreSQL database "lets_cook_final_upgrade_1794247878118", schema "public" at "localhost:5432"
+
+3 migrations found in prisma/migrations
+
+Applying migration `202611090003_clarification_disposition`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 202611090003_clarification_disposition/
+    └─ migration.sql
+
+All migrations have been successfully applied.
+
+FINAL-MIGRATION {"mode":"upgrade","database":"lets_cook_final_upgrade_1794247878118","result":"PASS","migrations":[{"migration_name":"202611090001_build1"},{"migration_name":"202611090002_evidence_hardening"},{"migration_name":"202611090003_clarification_disposition"}],"preserved":"exact inquiry/quote/acceptance/booking/decision/history/order/lines plus legacy clarification","instructionRows":[{"count":0}]}

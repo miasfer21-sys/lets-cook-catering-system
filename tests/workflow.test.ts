@@ -87,8 +87,9 @@ describe('PostgreSQL workflow integrity',()=>{
   await action('clarify',{reason:'Confirm service instructions'});const [c]=await rows(db,'SELECT * FROM clarification_request');
   await action('feasibility',{reason:'Reviewed'});
   await expect(action('decision',{outcome:'Approved',reason:'Reviewed'})).rejects.toThrow('clarification');
-  await action('resolve',{recordId:c.id,reason:'Customer confirmed buffet; fictional email DEMO-REPLY-1'});
+  await action('resolve',{recordId:c.id,reason:'Customer confirmed buffet',source:'fictional email DEMO-REPLY-1'});
   await expect(action('decision',{outcome:'Approved',reason:'Reviewed'})).rejects.toThrow('feasibility');
+  await action('disposition',{recordId:c.id,disposition:'Rejected',materialChange:false,reason:'No additional operational instruction required'});
   await approve();await action('confirm');
  });
  it('rechecks quote expiry at confirmation',async()=>{

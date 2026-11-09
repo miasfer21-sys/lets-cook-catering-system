@@ -3,15 +3,17 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --hostname 0.0.0.0",
+    "dev": "next dev --hostname 127.0.0.1",
     "build": "next build",
-    "start": "next start",
+    "start": "next start --hostname 127.0.0.1",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate deploy",
     "db:seed": "tsx scripts/seed.ts",
     "test": "tsx scripts/test-integration.ts",
     "test:e2e": "tsx scripts/test-integration.ts --browser",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:migrations": "tsx scripts/test-final-migrations.ts",
+    "test:production": "tsx scripts/test-integration.ts --production"
   },
   "dependencies": {
     "@prisma/client": "6.19.0",
