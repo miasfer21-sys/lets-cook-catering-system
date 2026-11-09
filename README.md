@@ -13,9 +13,24 @@ advisory AI, no live availability or allergy-safety certification.
 ## Setup
 
 Node.js 22.21+ (validated with 24.22.1), npm, Docker Engine/Compose v2 and Git are
-required. Ports 3000 and 5432 must be free. Clone the repository and select the
-reviewed final-development branch when it is made available; this final change
-has not been pushed. Run commands from the project root.
+required. Ports 3000 and 5432 must be free. The reviewed `final-development`
+branch has been pushed to GitHub and its application commit verified as
+`e6bb91ad453212df6a2650beb5c5058b84ec4d20`. Clone it and enter the project:
+
+```sh
+git clone --branch final-development https://github.com/miasfer21-sys/lets-cook-catering-system.git
+cd lets-cook-catering-system
+```
+
+For the accepted educational milestone, use the annotated tag
+`final-project-baseline` rather than relying on a branch that may later advance:
+
+```sh
+git switch --detach final-project-baseline
+git rev-parse 'final-project-baseline^{commit}'
+```
+
+Run the following setup commands from the project root.
 
 ```sh
 npm ci
@@ -153,8 +168,18 @@ Repository: `miasfer21-sys/lets-cook-catering-system`.
 Baseline tag `build-1-baseline` resolves to
 `1627ccb8dd72b83489ce2d64fc7de989e3cb7784`. TD11 is
 `2ceb3553cef4141a972814ace8a351a852e0687c` on `td11-testing-refinement`, pushed
-with the owner's separate approval. Final work starts there on `final-development`;
-no final push, merge, tag move or deployment is authorized.
+with the owner's separate approval. Final application work started there on
+`final-development`; commit `e6bb91ad453212df6a2650beb5c5058b84ec4d20` was then
+pushed and its remote SHA verified with separate owner approval. The owner
+accepted that application for the educational milestone and authorized a
+documentation-only reconciliation, branch push, and new annotated
+`final-project-baseline` tag at the resulting documentation commit.
+
+That tag identifies the accepted application plus documentation corrections;
+application code and executed-test evidence are unchanged from the reviewed
+application commit. No tests were rerun for this documentation correction.
+Existing branches/tags and their histories are preserved. No merge into `main`,
+deployment, movement of an existing tag, or history rewrite is part of this milestone.
 
 See DECISIONS.md for TD7b–TD10 reconciliation and FILES.md for the inventory.
 Real quote creation/revision/renewal, material amendments, conflict resolution,

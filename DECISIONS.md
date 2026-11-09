@@ -109,3 +109,19 @@ Final verification and limitations are in FINAL-VALIDATION.md. Historical TD11
 results/documents were preserved; two existing clarification test inputs were
 adapted to the new explicit source/disposition contract while retaining their
 original stale-feasibility assertions. No old results were rewritten.
+
+## Accepted educational milestone and publication reconciliation
+
+The owner reviewed and accepted application commit
+`e6bb91ad453212df6a2650beb5c5058b84ec4d20` on GitHub. That commit was pushed
+only to `final-development`, and its remote SHA was verified. A subsequent
+owner-authorized documentation-only correction updates current publication/setup
+references; it does not expand the implemented scope or change historical test
+results. No application verification commands were rerun for that correction.
+
+The new annotated `final-project-baseline` tag identifies the resulting
+application-plus-documentation commit for the educational milestone. Existing
+`build-1-baseline`, `main` and `td11-testing-refinement` identities/histories remain
+unchanged. This publication does not merge into `main`, move existing tags,
+rewrite history or deploy. FINAL-VALIDATION.md distinguishes the original
+application execution results from documentation/publication checks.

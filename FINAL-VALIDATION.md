@@ -1,11 +1,27 @@
 # Final application validation
 
-Executed November 9, 2026 on local branch `final-development`, created directly
-from verified TD11 commit `2ceb3553cef4141a972814ace8a351a852e0687c`.
+The application tests recorded below were executed November 9, 2026 on
+`final-development`, created directly from verified TD11 commit
+`2ceb3553cef4141a972814ace8a351a852e0687c`. The tested application was delivered
+in commit `e6bb91ad453212df6a2650beb5c5058b84ec4d20`, subsequently pushed to
+GitHub with owner approval and verified against the remote branch SHA.
 The immutable Build 1 baseline remains
-`1627ccb8dd72b83489ce2d64fc7de989e3cb7784`. This report accompanies the final
-local commit; use `git rev-parse HEAD` for its exact identity. No final push,
-merge, deployment, tag movement or protected-branch history change was performed.
+`1627ccb8dd72b83489ce2d64fc7de989e3cb7784`.
+
+The owner accepted the application for this educational milestone, subject to
+these documentation consistency corrections. This documentation-only revision
+does not alter application code, tests, dependencies, migrations, data or the
+historical evidence. **No application tests, build, migration rehearsal or
+startup smoke test were rerun for this correction.** The execution dates,
+outcomes and ledger below remain the original results.
+
+The accepted application plus documentation corrections is identified by the new
+annotated tag `final-project-baseline` on the resulting documentation commit.
+Resolve its exact commit with `git rev-parse 'final-project-baseline^{commit}'`.
+Publication verification consists of the documentation diff/clean-tree checks,
+branch push, and comparison of the remote branch SHA and annotated tag's peeled
+commit. It is separate from the historical application testing below. No merge,
+deployment, movement/deletion of existing tags or history rewrite is authorized.
 
 ## Approved scope and material advancement
 
@@ -161,5 +177,7 @@ educational prototype, not a production catering commitment system.
 
 README.md, FILES.md and DECISIONS.md describe current final behavior. Historical
 Build 1/TD11 scope statements remain identifiable as history and are superseded
-only where explicitly reconciled. Protected branches/tag and original histories
-were preserved; final changes are committed locally for review only.
+only where explicitly reconciled. The reviewed application commit was pushed and
+verified on `final-development`; the documentation-only correction and new
+annotated `final-project-baseline` identify the accepted educational milestone.
+Existing protected branches/tags and original histories remain preserved.
